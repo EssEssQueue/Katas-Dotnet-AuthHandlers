@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace AuthenticationAuthorization.WebApi.Controllers;
 
@@ -14,6 +16,7 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet(Name = "HelloWorld")]
+    [Authorize]
     public ActionResult Get()
     {
         return Ok(new {Message = "HelloWorld" });
