@@ -1,10 +1,14 @@
 using System.Collections.Immutable;
 using AuthenticationAuthorization.WebApi.Authentication;
 using AuthenticationAuthorization.WebApi.Authentication.Options;
+using AuthenticationAuthorization.WebApi.Authorization;
+using AuthenticationAuthorization.WebApi.Authorization.Requirements;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder);
 ConfigureAuthentication(builder);
+ConfigureAuthorization(builder);
 
 var app = builder.Build();
 ConfigurePipeline(app);
@@ -36,6 +40,22 @@ static void ConfigureAuthentication(WebApplicationBuilder builder)
             }
         )
         .AddScheme<OkChallengeAuthConfiguration, OkChallengeAuthHandler>("OkChallengeAuthScheme", _ => { });
+}
+
+static void ConfigureAuthorization(WebApplicationBuilder builder)
+{
+    builder.Services.AddScoped<IAuthorizationHandler, MagicWordAuthorizationHandler>();
+    builder
+        .Services
+        .AddAuthorization(
+            options =>
+            {
+                options.AddPolicy("VerifyMagicWord", policy =>
+                {
+                    policy.Requirements.Add(new MagicWordRequirement(builder.Configuration["MagicKeyword"]?.ToString() ?? "DefaultMagicWord"));
+                });
+            }
+        );
 }
 
 static void ConfigurePipeline(WebApplication app)

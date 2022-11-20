@@ -39,18 +39,26 @@ public class CustomHttpHeaderAuthHandler
             return AuthenticateResult.NoResult();
         }
 
-        if (Request.Headers[Options.HeaderName].ToString().Contains(Options.MustContain, StringComparison.CurrentCultureIgnoreCase))
-        {
-            return AuthenticateResult.Success(
-                new AuthenticationTicket(
-                    new ClaimsPrincipal(
-                        new ClaimsIdentity(new Claim[]{new Claim("Foo", "Bar")}, this.Scheme.Name)
-                        ),
-                    Scheme.Name
+        if (!Request.Headers[Options.HeaderName].ToString()
+                .Contains(Options.MustContain, StringComparison.CurrentCultureIgnoreCase))
+            return AuthenticateResult.Fail("No Magic Word");
+        var claims =
+            new Claim[]
+            {
+                new Claim(
+                    "MagicWord",
+                    Request.Headers[Options.HeaderName].ToString()
                 )
-            );
-        }
+            };
 
-        return AuthenticateResult.Fail("No Magic Word");
+        return AuthenticateResult.Success(
+            new AuthenticationTicket(
+                new ClaimsPrincipal(
+                    new ClaimsIdentity(claims, this.Scheme.Name)
+                ),
+                Scheme.Name
+            )
+        );
+
     }
 }

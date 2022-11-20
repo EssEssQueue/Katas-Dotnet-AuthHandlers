@@ -16,7 +16,7 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet(Name = "HelloWorld")]
-    [Authorize]
+    [Authorize(Policy = "VerifyMagicWord")]
     public ActionResult Get()
     {
         return Ok(new {Message = "HelloWorld" });
