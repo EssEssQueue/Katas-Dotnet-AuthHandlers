@@ -13,7 +13,7 @@ app.Run();
 static void ConfigureServices(WebApplicationBuilder builder)
 {
     //add services to container
-    builder.Services.AddControllers();
+    builder.Services.AddControllers();//And Add Authorization Middlewares
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 }
@@ -32,8 +32,10 @@ static void ConfigureAuthentication(WebApplicationBuilder builder)
             options =>
             {
                 builder.Configuration.Bind("CustomHttpHeaderAuth",options);
+                options.ForwardChallenge = "OkChallengeAuthScheme";
             }
-        );
+        )
+        .AddScheme<OkChallengeAuthConfiguration, OkChallengeAuthHandler>("OkChallengeAuthScheme", _ => { });
 }
 
 static void ConfigurePipeline(WebApplication app)
