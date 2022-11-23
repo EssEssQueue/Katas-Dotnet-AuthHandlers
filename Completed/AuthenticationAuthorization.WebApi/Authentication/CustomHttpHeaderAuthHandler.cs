@@ -42,6 +42,7 @@ public class CustomHttpHeaderAuthHandler
         if (!Request.Headers[Options.HeaderName].ToString()
                 .Contains(Options.MustContain, StringComparison.CurrentCultureIgnoreCase))
             return AuthenticateResult.Fail("No Magic Word");
+
         var claims =
             new Claim[]
             {
@@ -59,6 +60,5 @@ public class CustomHttpHeaderAuthHandler
                 Scheme.Name
             )
         );
-
     }
 }

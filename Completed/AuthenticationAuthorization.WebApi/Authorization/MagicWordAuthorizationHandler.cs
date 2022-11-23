@@ -11,9 +11,8 @@ public class MagicWordAuthorizationHandler : AuthorizationHandler<MagicWordRequi
         if (
             !string.IsNullOrEmpty(magicWord)
             &&
-            string.Equals(
-                magicWord!,
-                requirement.MagicWord,
+            requirement.MagicWord!.Contains(
+                magicWord,
                 StringComparison.CurrentCultureIgnoreCase
             )
         )
@@ -21,7 +20,7 @@ public class MagicWordAuthorizationHandler : AuthorizationHandler<MagicWordRequi
             context.Succeed(requirement);
             return Task.CompletedTask;
         }
-        context.Fail(new AuthorizationFailureReason(this, "No reason, I don't want to authorize you :("));
+        context.Fail(new AuthorizationFailureReason(this, "Magic word not found"));
         return Task.CompletedTask;
     }
 }

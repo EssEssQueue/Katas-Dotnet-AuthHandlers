@@ -54,6 +54,10 @@ static void ConfigureAuthorization(WebApplicationBuilder builder)
                 {
                     policy.Requirements.Add(new MagicWordRequirement(builder.Configuration["MagicKeyword"]?.ToString() ?? "DefaultMagicWord"));
                 });
+                options.AddPolicy("VerifyAnotherMagicWord", policy =>
+                {
+                    policy.Requirements.Add(new MagicWordRequirement("HardCodedMagicWord"));
+                });
             }
         );
 }
@@ -70,5 +74,5 @@ static void ConfigurePipeline(WebApplication app)
     app.UseAuthentication();
     app.UseHttpsRedirection();
     app.UseAuthorization();
-    app.MapControllers();
+    app.MapControllers().RequireAuthorization("VerifyMagicWord");
 }

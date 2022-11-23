@@ -6,6 +6,7 @@ namespace AuthenticationAuthorization.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize(Policy="VerifyAnotherMagicWord")]
 public class HomeController : ControllerBase
 {
     private readonly ILogger<HomeController> _logger;
